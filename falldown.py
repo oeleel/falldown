@@ -5,7 +5,7 @@ camera = uvage.Camera(800, 600)
 
 player_width = 20
 player_height = 20
-player_speed = 10
+player_speed = 5
 
 screen_width = 800
 gap_size = 40
@@ -43,7 +43,7 @@ def player_move():
 
     # Check for collision with each floor in the floors list
     for floor in floors:
-        if player.touches(floor):
+        if player.bottom_touches(floor):
             touching_floor = True
             player.speedy = 0
 
@@ -56,10 +56,10 @@ def player_move():
 
     if uvage.is_pressing('right arrow'):
         if player.x + player_width / 2 < right_boundary:  # Check right boundary
-            player.x += 5
+            player.x += player_speed
     if uvage.is_pressing('left arrow'):
         if player.x - player_width / 2 > left_boundary:  # Check left boundary
-            player.x -= 5
+            player.x -= player_speed
 
 
 def floor_move():
