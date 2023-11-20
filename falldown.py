@@ -35,13 +35,12 @@ player.speedy = player_speed
 
 
 def player_move():
-    global floors  # Ensure you have access to the global floors list
+    global floors
     right_boundary = screen_width
     left_boundary = 0
     player.move_speed()
     touching_floor = False
 
-    # Check for collision with each floor in the floors list
     for floor in floors:
         if player.bottom_touches(floor):
             touching_floor = True
@@ -63,17 +62,15 @@ def player_move():
 
 
 def floor_move():
-    global floors  # Ensure you have access to the global floors list
+    global floors
 
     for floor in floors:
-        # Check if the player is on the floor and adjust floor and player speeds
         if player.y == 10 and player.touches(floor):
             floor.speedy = 0
             player.speedy = 0
         elif floor.y > 10:
             floor.speedy = floor_speed
 
-        # Move each floor and adjust the player's position if overlapping
         floor.move_speed()
         if player.touches(floor):
             player.move_to_stop_overlapping(floor)
@@ -102,7 +99,6 @@ def tick():
     if game_on:
         player_move()
 
-        # Spawn floors
         if frames_to_spawn_floor >= 50:
             floor1_x = random.randint(int(-floor_width/2), int(floor_width/2))
             floor2_x = floor1_x + floor_width + gap_size
@@ -117,20 +113,19 @@ def tick():
         else:
             frames_to_spawn_floor += 1
 
-        # Update and draw floors
         temp_floors = []
         for floor in floors:
-            floor.y -= 1  # Adjust this value as needed for speed
-            if floor.y + floor_height > 0:  # Check if the floor is still on screen
+            floor.y -= 1
+            if floor.y + floor_height > 0:
                 temp_floors.append(floor)
             camera.draw(floor)
 
-        floors[:] = temp_floors  # Update the floors list
+        floors[:] = temp_floors
 
-        # Collision logic
+
         floor_move()
 
-        # Update score and draw player
+
         score_counter()
         camera.draw(player)
         camera.draw(score_display)
