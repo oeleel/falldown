@@ -6,17 +6,27 @@ camera = uvage.Camera(800, 600)
 player_width = 20
 player_height = 20
 player_speed = 10
-floor_gap = 40
+
 screen_width = 800
-floor_speed = -1
-player_on_floor_speed = 5
+gap_size = 30
+
+floor_width = screen_width - gap_size
+floor_gap = 40
+floor_speed = -3
+
+score = 0
+frames_to_score_up = 0
 game_on = True
 
 player = uvage.from_color(400, 15, 'red', player_width, player_height)
 floor = uvage.from_color(400, 300, 'black', 400, 20)
+score_display = uvage.from_text(30, 30, str(score), 50, 'red')
+game_over = uvage.from_text(400, 300, 'GAME OVER', 100, 'red', True)
 player.speedx = 0
 player.speedy = player_speed
 floor.speedy = floor_speed
+
+
 def player_move():
     player.move_speed()
     if player.touches(floor, 3):
@@ -34,6 +44,7 @@ def player_move():
     if uvage.is_pressing('left arrow'):
         player.x -= 5
 
+
 def floor_move():
     if player.y == 10 and player.touches(floor):
         floor.speedy = 0
@@ -48,23 +59,40 @@ def floor_move():
 
 def spawn_floors():
     while game_on:
-        floor = uvage.from_color(400, 300, 'black', 400, 20)
+        floor1 = uvage.from_color(random.randint(0, floor_width), 300, 'black', 400, 20)
         camera.draw(floor)
 
+
 def game_status():
+    global game_on
     if player.y == 10:
         game_on = False
-        print(game_on)
+
+
+
+
+def score_counter():
+    global score, score_display, frames_to_score_up
+    if player.y > 10 and frames_to_score_up == 10:
+        score += 1
+        score_display = uvage.from_text(30, 30, str(score), 50, 'red')
+        frames_to_score_up = 0
+    else:
+        frames_to_score_up += 1
+
+
 def tick():
     camera.clear('white')
     game_status()
+    if game_on is False:
+        camera.draw(game_over)
     player_move()
-    #spawn_floors()
+    # spawn_floors()
     floor_move()
-    if camera.mouseclick:
-        player.center = camera.mouse
+    score_counter()
     camera.draw(player)
     camera.draw(floor)
+    camera.draw(score_display)
     camera.display()
 
 
